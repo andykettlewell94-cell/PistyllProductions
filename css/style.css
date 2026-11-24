@@ -328,9 +328,6 @@ button { font: inherit; }
 .contact__inner { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(48px, 7vw, 110px); align-items: start; }
 .contact__intro { position: sticky; top: 120px; }
 .contact__intro > p:not(.eyebrow) { margin: 28px 0 0; color: color-mix(in srgb, var(--foam) 75%, transparent); max-width: 42ch; }
-.contact__social { list-style: none; padding: 0; margin: 36px 0 0; display: flex; gap: 22px; flex-wrap: wrap; }
-.contact__social a { text-decoration: none; font-size: 14px; color: var(--sand); border-bottom: 1px solid color-mix(in srgb, var(--sand) 40%, transparent); padding-bottom: 2px; }
-.contact__social a:hover { border-bottom-color: var(--sand); }
 
 .form {
   display: grid; gap: 22px;
