@@ -100,18 +100,17 @@
   window.addEventListener('resize', onScroll);
   update();
 
-  // Play the reel only while it's on screen. If no video file exists yet the poster shows.
-  let hasVideo = false;
-  video.addEventListener('loadeddata', () => { hasVideo = true; soundBtn.hidden = false; });
+  // Autoplay the reel (muted) as soon as the page loads. It only pauses once
+  // you've scrolled right past it, and resumes when you scroll back up.
+  // Visitors who ask their device to reduce motion get the poster instead.
+  const playReel = () => { if (!reduceMotion) video.play().catch(() => {}); };
+  if (reduceMotion) { video.removeAttribute('autoplay'); video.pause(); }
+  video.addEventListener('loadeddata', () => { soundBtn.hidden = false; playReel(); });
+  if (video.readyState >= 2) { soundBtn.hidden = false; playReel(); }
   new IntersectionObserver(([entry]) => {
-    if (!hasVideo && video.readyState < 2) return;
-    if (entry.isIntersecting && !reduceMotion) video.play().catch(() => {});
-    else video.pause();
-  }, { threshold: 0.25 }).observe(reel);
-  video.addEventListener('canplay', () => {
-    const r = reel.getBoundingClientRect();
-    if (r.top < window.innerHeight && r.bottom > 0 && !reduceMotion) video.play().catch(() => {});
-  }, { once: true });
+    if (entry.isIntersecting) playReel();
+    else if (entry.boundingClientRect.top < 0) video.pause();
+  }).observe(reel);
 
   soundBtn.addEventListener('click', () => {
     video.muted = !video.muted;
