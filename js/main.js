@@ -103,7 +103,14 @@
   // Autoplay the reel (muted) as soon as the page loads. It only pauses once
   // you've scrolled right past it, and resumes when you scroll back up.
   // Visitors who ask their device to reduce motion get the poster instead.
+  // Safari only autoplays if muted is set as a property, not just the attribute
+  video.muted = true;
+  video.defaultMuted = true;
   const playReel = () => { if (!reduceMotion) video.play().catch(() => {}); };
+  // If the browser still blocked autoplay, start on the first scroll, tap or key press
+  const kick = () => { if (video.paused) playReel(); };
+  ['scroll', 'touchstart', 'pointerdown', 'keydown'].forEach((ev) =>
+    window.addEventListener(ev, kick, { once: true, passive: true }));
   if (reduceMotion) { video.removeAttribute('autoplay'); video.pause(); }
   video.addEventListener('loadeddata', () => { soundBtn.hidden = false; playReel(); });
   if (video.readyState >= 2) { soundBtn.hidden = false; playReel(); }
